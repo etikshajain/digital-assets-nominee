@@ -14,12 +14,14 @@ contract Asset_transfer_to_nominee is Ownable{
     );
 
     //variables and structs
-    struct User {
+     //Would be good if total bits summation of this struct is a multiple of 256bits.
+     //This is an optimization technique
+    struct User {              
         uint id,
-        address wallet;
-        address nominee; 
-        uint time_interval; // in seconds
-        uint last_transaction_timestamp; //in seconds
+        address wallet_adr;                              //160bits
+        uint8 time_interval; //unit should be hours
+        address nominee_adr;                             //160bits
+        uint last_transaction_timestamp;                  //
     }
     mapping (uint=>User) id_to_user;
     mapping (address=>User) address_to_user;
@@ -41,7 +43,7 @@ contract Asset_transfer_to_nominee is Ownable{
 
     function active_transaction() external  {
         require(exists[msg.sender]==true);
-        address_to_user[msg.sender].last_transaction_timestamp =  now;
+        address_to_user[msg.sender].last_transaction_timestamp =  block.timestamp;  // now == block.timestamp
         emit active_transaction_completed();
     }
 
